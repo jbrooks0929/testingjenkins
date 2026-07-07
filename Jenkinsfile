@@ -4,9 +4,9 @@ pipeline {
     environment {
         AWS_REGION = 'us-east-2'
         IMAGE_NAME = 'test-flask'
-        REPO_NAME  = 'test'
-        IMAGE_TAG  = 'latest'
-        ECR_REPO   = '676327216025.dkr.ecr.us-east-2.amazonaws.com/testaws'
+        REPO_NAME = 'test'
+        IMAGE_TAG = 'latest'
+        ECR_REPO = '676327216025.dkr.ecr.us-east-2.amazonaws.com/testaws'
     }
 
     stages {
@@ -24,24 +24,23 @@ pipeline {
 $ecrLogin = aws ecr get-login-password --region $env:AWS_REGION
 $ecrLogin | docker login --username AWS --password-stdin $env:ECR_REPO
 '''
-                }
             }
         }
 
         stage('Build Docker Image') {
             steps {
                 powershell '''
-                docker build -t $env:IMAGE_NAME`:$env:IMAGE_TAG .
-                docker tag $env:IMAGE_NAME`:$env:IMAGE_TAG $env:ECR_REPO`:$env:IMAGE_TAG
-                '''
+docker build -t $env:IMAGE_NAME`:$env:IMAGE_TAG .
+docker tag $env:IMAGE_NAME`:$env:IMAGE_TAG $env:ECR_REPO`:$env:IMAGE_TAG
+'''
             }
         }
 
         stage('Push to ECR') {
             steps {
                 powershell '''
-                docker push $env:ECR_REPO`:$env:IMAGE_TAG
-                '''
+docker push $env:ECR_REPO`:$env:IMAGE_TAG
+'''
             }
         }
     }
