@@ -7,9 +7,15 @@ pipeline {
 
     stages {
 
-        stage('Check Environment') {
+        stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/jbrooks0929/testingjenkins'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                bat 'docker build -t %IMAGE_NAME%:latest .'
             }
         }
 
@@ -23,6 +29,7 @@ pipeline {
                     bat '''
 docker login -u %DOCKER_USER% -p %DOCKER_PASS%
 docker push %IMAGE_NAME%:latest
+docker logout
 '''
                 }
             }
@@ -33,6 +40,5 @@ docker push %IMAGE_NAME%:latest
                 bat 'echo Deploying application...'
             }
         }
-
     }
 }
