@@ -22,7 +22,7 @@ pipeline {
             steps {
                 powershell '''
 $ecrLogin = aws ecr get-login-password --region $env:AWS_REGION
-$ecrLogin | docker login --username AWS --password-stdin $env:ECR_REPO
+$ecrLogin | docker login --username AWS --password-stdin 676327216025.dkr.ecr.us-east-2.amazonaws.com
 '''
             }
         }
