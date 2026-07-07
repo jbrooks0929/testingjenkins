@@ -24,10 +24,10 @@ pipeline {
              credentialsId: 'aws-creds']
         ]) {
             powershell '''
-$registry = "676327216025.dkr.ecr.us-east-2.amazonaws.com"
+$env:AWS_ACCESS_KEY_ID=$env:AWS_ACCESS_KEY_ID
+$env:AWS_SECRET_ACCESS_KEY=$env:AWS_SECRET_ACCESS_KEY
 
-aws ecr get-login-password --region $env:AWS_REGION |
-docker login --username AWS --password-stdin $registry
+aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 676327216025.dkr.ecr.us-east-2.amazonaws.com
 '''
         }
     }
