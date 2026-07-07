@@ -16,7 +16,18 @@ pipeline {
                     url: 'https://github.com/jbrooks0929/testingjenkins'
             }
         }
-
+stage('Test AWS') {
+    steps {
+        withCredentials([
+            [$class: 'AmazonWebServicesCredentialsBinding',
+             credentialsId: 'aws-creds']
+        ]) {
+            powershell '''
+aws sts get-caller-identity
+'''
+        }
+    }
+}
        stage('Login to ECR') {
     steps {
         withCredentials([
@@ -24,10 +35,11 @@ pipeline {
              credentialsId: 'aws-creds']
         ]) {
             powershell '''
-$env:AWS_ACCESS_KEY_ID=$env:AWS_ACCESS_KEY_ID
-$env:AWS_SECRET_ACCESS_KEY=$env:AWS_SECRET_ACCESS_KEY
+$registry = "676327216025.dkr.ecr.us-east-2.amazonaws.com"
 
-aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 676327216025.dkr.ecr.us-east-2.amazonaws.com
+$password = aws ecr get-login-password --region us-east-2
+
+docker login --username AWS --password $password $registry
 '''
         }
     }
