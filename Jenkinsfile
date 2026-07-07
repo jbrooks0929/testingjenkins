@@ -9,9 +9,7 @@ pipeline {
 
         stage('Check Environment') {
             steps {
-                bat 'echo PATH=%PATH%'
-                bat 'where docker'
-                bat 'docker --version'
+                git branch: 'main', url: 'https://github.com/jbrooks0929/testingjenkins'
             }
         }
 
