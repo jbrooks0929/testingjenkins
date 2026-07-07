@@ -4,7 +4,6 @@ pipeline {
     environment {
         AWS_REGION = 'us-east-2'
         IMAGE_NAME = 'test-flask'
-        REPO_NAME = 'test'
         IMAGE_TAG = 'latest'
         ECR_REPO = '676327216025.dkr.ecr.us-east-2.amazonaws.com/testaws'
     }
@@ -20,10 +19,17 @@ pipeline {
 
         stage('Login to ECR') {
             steps {
-                powershell '''
-$ecrLogin = aws ecr get-login-password --region $env:AWS_REGION
-$ecrLogin | docker login --username AWS --password-stdin 676327216025.dkr.ecr.us-east-2.amazonaws.com
+                withCredentials([
+                    [
+                        $class: 'AmazonWebServicesCredentialsBinding',
+                        credentialsId: 'aws-creds'
+                    ]
+                ]) {
+                    powershell '''
+aws ecr get-login-password --region $env:AWS_REGION |
+docker login --username AWS --password-stdin $env:ECR_REPO
 '''
+                }
             }
         }
 
